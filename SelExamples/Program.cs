@@ -5,33 +5,37 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using SelExamples;
 
-GHPTests gHTests = new GHPTests();
+AmazonTests az = new AmazonTests();
 
 List<string> drivers=new List<string>();
-drivers.Add("InitializeEdgeDriver()");
-drivers.Add("InitializeGoogleDriver()");
+//drivers.Add("InitializeEdgeDriver()");
+drivers.Add("Chrome");
 
-/*Console.WriteLine("1.Edge 2.Chrome");
-int ch = Convert.ToInt32(Console.ReadLine());
-switch (ch)
+//Console.WriteLine("1.Edge 2.Chrome");
+//int ch = Convert.ToInt32(Console.ReadLine());
+foreach(var d in drivers)
 {
-    case 1:
-        gHTests.InitializeEdgeDriver(); break;
-    case 2:
-        gHTests.InitializeChromeDriver(); break;
-}*/
-foreach (var d in drivers)
-{
+
+    
+    switch (d)
+    {
+        //case "Edge":
+            //az.InitializeEdgeDriver(); break;
+        case "Chrome":
+             az.InitializeChromeDriver(); break;
+    }
+
 
 
     try
     {
-        gHTests.TitleTest();
-        gHTests.PageSourceandURLTest();
-        gHTests.GoogleSearchTest();
-        gHTests.GmailLinkTest();
-        gHTests.ImagesLinkTest();
-
+        //az.TiltleTest();
+        //az.LogoClickTest();
+        //Thread.Sleep(2000);
+        //az.SearchProductTest(); 
+        //az.SignInAccListTest();
+        az.SearchAndFilterProductByBrandtest();
+       
 
     }
     catch (AssertionException)
@@ -39,5 +43,5 @@ foreach (var d in drivers)
         Console.WriteLine("Fail");
     }
 
-    gHTests.Destruct();
+   az.Destruct();
 }

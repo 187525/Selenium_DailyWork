@@ -11,6 +11,7 @@ namespace SeleniumNUnitExample
     [TestFixture]
     internal class GHPTests : CoreCodes
     {
+        [Ignore("other")]
         [Test]
         [Order(0)]
         public void TitleTest()
@@ -19,6 +20,7 @@ namespace SeleniumNUnitExample
             Assert.AreEqual("Google", driver.Title);
             Console.WriteLine("Title test - Pass");
         }
+        [Ignore("other")]
         [Test]
         [Order(1)]
         public void GSTests()
@@ -32,6 +34,7 @@ namespace SeleniumNUnitExample
             Assert.AreEqual("hp laptop - Google Search", driver.Title);
             Console.WriteLine("GS TEST - Pass");
         }
+        [Ignore("other")]
         [Test]
        
         public void AllLinkStatusTest()

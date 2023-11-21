@@ -124,22 +124,35 @@ namespace SeleniumNunitExample
 
             emailInput.SendKeys(email);
             passwordInput.SendKeys(pwd);
+            TakeScreenshot();
+
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("arguments[0].scrollIntoView(true);", 
+                driver.FindElement(By.XPath("//button[@type='submit']")));
+            TakeScreenshot();
+            Thread.Sleep(5000);
+            js.ExecuteScript("arguments[0].click();",
+                driver.FindElement(By.XPath("//button[@type='submit']")));
+            TakeScreenshot();
+
+
+
             ClearForm(emailInput);
-            ClearForm(passwordInput);
+          ClearForm(passwordInput);
 
 
-            Thread.Sleep(TimeSpan.FromSeconds(3));
+           // Thread.Sleep(TimeSpan.FromSeconds(3));
         }
         static object[] invalidLoginData()
 
         {
             return new object[]
             {
-                new object[] {"qwerty@aa.com","aaa@11"},
+                new object[] {"qwerty@aa.com","aa"},
                 new object[] {"asdfg@xx.com","bbbb"}
             };
         }
 
-
+        
     }
 }

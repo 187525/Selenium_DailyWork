@@ -30,10 +30,10 @@ namespace SelNunitAssignmnet
             
             IWebElement SearchInput = fluentwait.Until(driv => driv.FindElement(By.XPath("//*[@id=\"header_search_text\"]")));
             SearchInput.SendKeys("Eyewear");
-            SearchInput.SendKeys(Keys.Enter);
+            Assert.That(driver.Url.Contains("Eyewear"));
             Thread.Sleep(5000);
 
-            Assert.That(driver.Url.Contains("Eyewear"));
+           
 
 
         }
@@ -66,28 +66,58 @@ namespace SelNunitAssignmnet
         [Test]
         [Order(2)]
        
-        public void AddProductCart()
-        {
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(5));
+        
+            public void addingProductToCartTest()
+            {
+                DefaultWait<IWebDriver> fluentWait = new DefaultWait<IWebDriver>(driver);
+                fluentWait.Timeout = TimeSpan.FromSeconds(5);
+                fluentWait.PollingInterval = TimeSpan.FromMilliseconds(50);
+                fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+                fluentWait.Message = "Element not found.";
 
-            DefaultWait<IWebDriver> fluentwait = new DefaultWait<IWebDriver>(driver);
-            fluentwait.Timeout = TimeSpan.FromSeconds(5);
-            fluentwait.PollingInterval = TimeSpan.FromMilliseconds(100);
-            fluentwait.IgnoreExceptionTypes(typeof(NoSuchElementException));
-            fluentwait.Message = "Element not found";
-            IWebElement selectsize = fluentwait.Until(d => d.FindElement(By.XPath("//a[text()='Black-2.50']")));
+                IWebElement path = driver.FindElement(By.LinkText("Black-3.00"));
+
+                Actions actions = new Actions(driver);
+                Action selectingSize = () => actions.MoveToElement(path).Click()
+                .Build()
+                .Perform();
+
+                selectingSize.Invoke();
+
+                IWebElement buttonPath = driver.FindElement(By.XPath("//*[@id=\"cart-panel-button-0\"]/span"));
+                Action addingToCart = () => actions.MoveToElement(buttonPath).Click()
+                .Build()
+                .Perform();
+                addingToCart.Invoke();
+                Assert.That(driver.Url.Contains("reading-glasses-with-led-lights-lrg4"));
+                Thread.Sleep(3000);
+            }
 
 
-            selectsize.Click();
-            IWebElement submitbutton = fluentwait.Until(d => d.FindElement(By.XPath("//*[@id=\"cart-panel-button-0\"]/span")));
-            submitbutton.Click();
-            IWebElement status = fluentwait.Until(d => d.FindElement(By.XPath("//*[text()='My Shopping Cart: ']")));
-            Assert.That(status.Text.Contains("cart"));
+            [Order(3)]
+
+            [Test]
+            public void viewShoppingCartTest()
+            {
+                DefaultWait<IWebDriver> fluentWait = new DefaultWait<IWebDriver>(driver);
+                fluentWait.Timeout = TimeSpan.FromSeconds(5);
+                fluentWait.PollingInterval = TimeSpan.FromMilliseconds(50);
+                fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+                fluentWait.Message = "Element not found.";
+
+                // IWebElement shoppingCart =driver.FindElement(By.Id("shopCartHead"));
+                //Assert.That(shoppingCart.Text == "My Shopping Cart: At present, you have (1) items.");
+
+                IWebElement closeButton = driver.FindElement(By.XPath("/html/body/div[5]/div/a"));
+                Actions actions = new Actions(driver);
+                Action addingToCart = () => actions.MoveToElement(closeButton).Click()
+                .Build().Perform();
+                addingToCart.Invoke();
+                Thread.Sleep(2000);
+            
+            }
+
+
 
         }
-        
-
-
-
-    }
 }

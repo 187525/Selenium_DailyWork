@@ -17,11 +17,11 @@ namespace Naaptol.PageObjects
             this.driver = driver;
             PageFactory.InitElements(driver, this);
         }
-        [FindsBy(How = How.XPath, Using = "//a[text()='Black-2.50']")]
+        [FindsBy(How = How.XPath, Using = "//a[text()='Rose Gold-3.00']")]
         public IWebElement Size { get; set; }
-        [FindsBy(How = How.Id, Using = "cart-panel-button-0")]
+        [FindsBy(How = How.XPath, Using = "//a[@id='cart-panel-button-0']")]
         public IWebElement BuyNowButton { get; set; }
-        [FindsBy(How = How.Id, Using = "cart-panel-button-0")]
+        [FindsBy(How = How.XPath, Using = "//a[@class='fancybox-item fancybox-close']")]
         public IWebElement Close { get; set; }
 
         public void SizeSelect()

@@ -1,35 +1,30 @@
-﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Edge;
+﻿using AventStack.ExtentReports.Reporter;
+using AventStack.ExtentReports;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Edge;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AventStack.ExtentReports.Reporter;
-using AventStack.ExtentReports;
-using Serilog;
 
-namespace CompleteCodes.Utilities
+namespace PizzaHut
 {
-    internal class CoreCodes
+    public class CoreCodes
     {
-
-        public Dictionary<string, string> properties;
-        public static IWebDriver? driver;
+        Dictionary<string, string>? properties;
+        public IWebDriver? driver;
 
         public ExtentReports extent;
         ExtentSparkReporter sparkReporter;
         public ExtentTest test;
-
         public void ReadConfigSettings()
         {
+            string currentDirectory = Directory.GetParent(@"../../../").FullName;
             properties = new Dictionary<string, string>();
-
-            string currdir = Directory.GetParent(@"../../../").FullName;
-            string fileName = currdir + "/configsettings/config.properties";
+            string fileName = currentDirectory + "/ConfigSettings/Config.properties";
             string[] lines = File.ReadAllLines(fileName);
-
             foreach (string line in lines)
             {
                 if (!string.IsNullOrWhiteSpace(line) && line.Contains("="))
@@ -41,19 +36,12 @@ namespace CompleteCodes.Utilities
                 }
             }
         }
-
-        public static void ScrollIntoView(IWebDriver driver, IWebElement? element)
-        {
-            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
-            js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
-        }
         public bool CheckLinkStatus(string url)
         {
             try
             {
                 var request = (System.Net.HttpWebRequest)
                     System.Net.WebRequest.Create(url);
-
                 request.Method = "HEAD";
                 using (var response = request.GetResponse())
                 {
@@ -70,9 +58,8 @@ namespace CompleteCodes.Utilities
         public void InitializeBrowser()
         {
             string currdir = Directory.GetParent(@"../../../").FullName;
-
             extent = new ExtentReports();
-            sparkReporter = new ExtentSparkReporter(currdir + "/ExtentReports/extent-report-"
+            sparkReporter = new ExtentSparkReporter(currdir + "/ExtentReports/extent-report"
                 + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".html");
 
             extent.AttachReporter(sparkReporter);
@@ -88,53 +75,33 @@ namespace CompleteCodes.Utilities
             }
             driver.Url = properties["baseUrl"];
             driver.Manage().Window.Maximize();
-
         }
 
         [OneTimeTearDown]
         public void Cleanup()
         {
-            driver?.Quit();
+            driver.Quit();
             extent.Flush();
         }
+
+
         public void TakeScreenShot()
         {
-            ITakesScreenshot iss = (ITakesScreenshot)driver;
-            Screenshot ss = iss.GetScreenshot();
+            ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
+            Screenshot screenshot = takesScreenshot.GetScreenshot();
 
-            string currdir = Directory.GetParent(@"../../../").FullName;
-            string? filepath = currdir + "/Screenshots/ss_" +
-                DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".png";
+            string currDir = Directory.GetParent(@"../../../").FullName;
+            string filename = currDir + "/Screenshots/ss_" + DateTime.Now.ToString("yyyy/MM/dd_HHmmss") + ".png";
 
-            ss.SaveAsFile(filepath);
+            screenshot.SaveAsFile(filename);
+            Console.WriteLine("Takes screenshot");
 
         }
-        /*  protected void LogTestResult(bool condition, string successMessage, string failureMessage)
-          {
-              if (condition)
-              {
-                  Log.Information(successMessage);
-              }
-              else
-              {
-                  Log.Error(failureMessage);
-              }
-          }*/
-        protected void LogTestResult(string testName, string result, string errorMessage = null)
+
+        public static void ScrollIntoView(IWebDriver driver, IWebElement element)
         {
-            Log.Information(result);
-
-            test = extent.CreateTest(testName);
-
-            if (errorMessage == null)
-            {
-                test.Pass(result);
-            }
-            else
-            {
-                Log.Error($"Test failed for {testName}. \n Exception: \n {errorMessage}");
-                test.Fail(result);
-            }
+            IJavaScriptExecutor js = (IJavaScriptExecutor)driver;
+            js.ExecuteScript("arguments[0].scrollIntoView(true);", element);
         }
     }
 }

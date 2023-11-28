@@ -1,39 +1,62 @@
 ﻿using BunnyCart.PageObjects;
-using RedDiff;
+using BunnyCart.Utilities;
 using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BunnyCart.Utillities;
+using Serilog;
 
 namespace BunnyCart.TestScripts
 {
-    internal class BCTests :CoreCodes
-
+    [TestFixture]
+    internal class BunnyCartTests : CoreCodes
     {
-
 
         [Test]
         public void SignUpTest()
         {
-            BCHP bchp = new BCHP(driver);
-            bchp.ClickCreateAccount();
-            //try
-            //{
-            //    Assert.That(driver.FindElement(By.XPath("//div[" + "@class='modal-inner-wrap']//following::h1[2]")).Text, Is.EqualTo("Create an Account"));
-            //}
-            //catch (AssertionException)
-            //{
-            //    Console.WriteLine("Create account modal not present");
-            //}
-            //bchp.SignUpButton("Abc", "Def", "ghi@gmail.com", "12345", "12345", "9876543210");
+            string? currDir1 = Directory.GetParent(@"../../../")?.FullName;
+            string? logfilepath = currDir1 + "/Logs/log_" + DateTime.Now.ToString("yyyy/MM/dd_HHmmss") + ".txt";
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Console()
+                .WriteTo.File(logfilepath, rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+            BunnyCartHomePage bunnyCartHomePage = new BunnyCartHomePage(driver);
+            Log.Information("Create Account Test Started");
+            bunnyCartHomePage.ClickCreateAccountLink();
+            Log.Information("Create Account Test Clicked");
+
+            Thread.Sleep(1000);
+
+            try
+            {
+                Assert.True(driver?.FindElement(By.XPath("//div[" +
+                    "@class='modal-inner-wrap']//following::h1[2]")).Text
+                    == "Create an Account", $"Test failed for Create Account");
+                Log.Information("Test passed for Create Account");
+
+                test = extent.CreateTest("Create Account Link Test");
+                test.Pass("Create Account Link success");
+
+            }
+            catch (AssertionException ex)
+            {
+                Log.Error($"Test failed for Create Account. \n Exception: {ex.Message}");
+
+                test = extent.CreateTest("Create Account Link Test");
+                test.Fail("Create Account Link failed");
+
+            }
+
+
+            Assert.That(driver?.FindElement(By.XPath("//div[" +
+                 "@class='modal-inner-wrap']//following::h1[2]")).Text,
+                 Is.EqualTo("Create an Account"));
+
             string? currDir = Directory.GetParent(@"../../../")?.FullName;
             string? excelFilePath = currDir + "/TestData/InputData.xlsx";
             string? sheetName = "CreateAccount";
 
-            List<ExcelData> excelDataList = ExcelUtilities.ReadExcelData(excelFilePath, sheetName);
+            List<ExcelData> excelDataList = ExcelUtils.ReadExcelData(excelFilePath, sheetName);
 
             foreach (var excelData in excelDataList)
             {
@@ -48,15 +71,11 @@ namespace BunnyCart.TestScripts
                 Console.WriteLine($"First Name: {firstName}, Last Name: {lastName}, Email: {email}, Password: {pwd}, Confirm Password: {conpwd}, Mobile Number: {mbno}");
 
 
-                bchp.SignUpButton(firstName, lastName, email, pwd, conpwd, mbno);
-                // Assert.That(""."")
+                bunnyCartHomePage.ClickCreateAccountButton(firstName, lastName, email, pwd, conpwd, mbno);
 
             }
+            Log.CloseAndFlush();
 
         }
-
     }
-
-
 }
-

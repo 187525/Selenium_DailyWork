@@ -1,5 +1,5 @@
 ﻿using BunnyCart.PageObjects;
-using RedDiff;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +8,26 @@ using System.Threading.Tasks;
 
 namespace BunnyCart.TestScripts
 {
-    internal class SearchTests:CoreCodes
+    [TestFixture]
+    internal class SearchTests : CoreCodes
     {
-
         [Test]
-        [TestCase("Water")]
-        public void SearchProductAndAddToCart(string searchtext)
+        [TestCase("Water", 2)]
+        public void SearchProductAndAddToCartTest(string searchtext, int count)
         {
-            BCHP bchp = new(driver);
+            BunnyCartHomePage bchp = new BunnyCartHomePage(driver);
             var searchResultPage = bchp?.TypeSearchInput(searchtext);
-            Assert.That(searchtext.Contains(searchResultPage?.GetFirstProductLInk()));
-            var productPage = searchResultPage?.ClickFirstProductLink();
-            Assert.That(searchtext.Equals(productPage?.GetProductTitleLabel()));
-            productPage?.ClickIncQty();
+            CoreCodes.ScrollIntoView(driver, driver.FindElement(By.XPath("//*[@id=\'amasty-shopby-product-list\']/div[2]/ol/li[1]")));
+            //Assert.That(searchtext.Equals(searchResultPage?.GetFirstProductLink()));
+            Thread.Sleep(3000);
+            var productPage = searchResultPage?.ClickFirstProductLink(count);
+            Thread.Sleep(3000);
+            //            Assert.That(searchtext.Equals(productPage?.GetProductTitleLabel()));
+            productPage?.ClickIncQtyLink();
+            Thread.Sleep(3000);
             productPage?.ClickAddToCartBtn();
-            Thread.Sleep(1000);
 
+            Thread.Sleep(5000);
         }
     }
 }

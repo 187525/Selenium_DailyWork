@@ -32,9 +32,9 @@ namespace Naaptol.PageObjects
         {
             BuyNowButton.Click();
         }
-        public void ClickClose()
+        public string GetCurrentUrl()
         {
-            Close.Click();
+            return driver.Url;
         }
     }
 }

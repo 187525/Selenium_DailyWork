@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BunnyCart.Utillities
+namespace BunnyCart.Utilities
 {
-    internal class ExcelUtilities
+    internal class ExcelUtils
     {
         public static List<ExcelData> ReadExcelData(string excelFilePath, string sheetName)
         {
@@ -64,4 +64,3 @@ namespace BunnyCart.Utillities
     }
 
 }
-

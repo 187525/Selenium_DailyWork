@@ -10,7 +10,7 @@ using AventStack.ExtentReports.Reporter;
 using AventStack.ExtentReports;
 using Serilog;
 
-namespace CompleteCodes.Utilities
+namespace UrbanLadder.Utilities
 {
     internal class CoreCodes
     {

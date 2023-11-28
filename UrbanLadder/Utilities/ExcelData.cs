@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Urbanladder.Utilities
+namespace UrbanLadder.Utilities
 {
-    internal class ProductData
+    internal class ExcelData
     {
         public string? ProductName;
     }
